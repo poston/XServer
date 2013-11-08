@@ -1,0 +1,12 @@
+XServer HTTP Service Start:
+XServerBootstrap.bind()->AbstractChannel.bind()->Channels.bind()->NioServerSocketPipelineSink.eventSunk()->NioServerSocketPipelineSink.bind()->DeadLockProofWorker.start()->NioServerSocketPipelineSink.Boss.run()
+
+When XServerBootstrap call bind method will fire BOUND event, that enter NioServerSocketPipeline 
+and execute inner class Boss's thread method. The Thread Boss will listen at specialized HTTP port, 
+when accept socket Boss delegate event to Work Thread and the Boss Thread will return again to accept 
+coming socket. the Work Thread will register OP_READ on its channel. At NioWork Thread, it will reach 
+processRegisterTaskQueue, processEventQueue, processWriteTaskQueue and processSelectedKeys methods.
+
+
+method
+
