@@ -19,7 +19,6 @@
 		<property name="locations">
 			<list>
 				<value>classpath:xserver-http.properties</value>
-				<value>classpath:xserver-reporter.properties</value>
 				<value>classpath:jdbc.properties</value>
 				<value>classpath:hbase.properties</value>
 			</list>
