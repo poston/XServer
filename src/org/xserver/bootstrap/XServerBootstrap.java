@@ -166,9 +166,6 @@ public class XServerBootstrap extends AbstractBootstrap {
 
 		serverBootstrap
 				.bind(new InetSocketAddress(xServerHttpConfig.getPort()));
-		ReflectionUtil.classFound(new String[] {
-				"nl.cwi.monetdb.jdbc.MonetDriver",
-				"oracle.jdbc.driver.OracleDriver" });
 		logger.info("XServer bind port {}.", xServerHttpConfig.getPort());
 	}
 
