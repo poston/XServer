@@ -1,6 +1,7 @@
 package org.xserver.component.core;
 
 import javax.annotation.Resource;
+import javax.annotation.PostConstruct;
 
 import org.jboss.netty.channel.ChannelEvent;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -95,6 +96,7 @@ public class XServerHttpFactory implements ChannelPipelineFactory {
 
 	private static HashedWheelTimer timer = new HashedWheelTimer();
 
+	@PostConstruct
 	public void initExecutor() {
 		executionHandler = new ExecutionHandler(
 				xServerHttpConfig.initMemoryExecutor());
@@ -102,10 +104,6 @@ public class XServerHttpFactory implements ChannelPipelineFactory {
 
 	@Override
 	public ChannelPipeline getPipeline() throws Exception {
-		if (executionHandler == null) {
-			initExecutor();
-		}
-
 		ChannelPipeline pipeline = Channels.pipeline();
 
 		pipeline.addLast("XServerHttpDecoder", new XServerHttpRequestDecoder());
