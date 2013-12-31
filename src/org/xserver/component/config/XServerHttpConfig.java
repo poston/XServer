@@ -55,6 +55,8 @@ public class XServerHttpConfig {
 	private String hostname;
 	@Config(split = ",")
 	private String[] recipients;
+	@Config
+	private boolean interceptor = false;
 
 	public int getPort() {
 		return port;
@@ -134,6 +136,14 @@ public class XServerHttpConfig {
 
 	public void setRecipients(String[] recipients) {
 		this.recipients = recipients;
+	}
+	
+	public boolean isInterceptor() {
+		return interceptor;
+	}
+
+	public void setInterceptor(boolean interceptor) {
+		this.interceptor = interceptor;
 	}
 
 	/**
