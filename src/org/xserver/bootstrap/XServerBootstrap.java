@@ -97,18 +97,7 @@ import org.xserver.component.spring.SpringUtil;
  * Processing:   209  847 388.1    863    1389
  * Waiting:      192  839 398.4    863    1389
  * Total:        413 1011 361.4   1040    1549
-
- * 
- * Percentage of the requests served within a certain time (ms)
- *   50%      5
- *   66%      7
- *   75%      8
- *   80%      9
- *   90%     13
- *   95%     18
- *   98%     26
- *   99%     30
- *  100%    231 (longest request)
+ *
  * 
  * Percentage of the requests served within a certain time (ms)
  *	50%   	1040
