@@ -75,9 +75,13 @@ public class XServerHttpContextAttachment implements ChannelFutureListener {
 	@Override
 	public void operationComplete(ChannelFuture future) throws Exception {
 		future.getChannel().close();
-		XServerHttpInterceptor interceptor = ((XServerHttpInterceptor) SpringUtil
-				.getBean(XServerHttpInterceptor.class));
-		interceptor.dec(request.getPath());
+		XServerHttpConfig xServerHttpConfig = (XServerHttpConfig) SpringUtil
+				.getBean(XServerHttpConfig.class);
+		if (xServerHttpConfig.isInterceptor()) {
+			XServerHttpInterceptor interceptor = ((XServerHttpInterceptor) SpringUtil
+					.getBean(XServerHttpInterceptor.class));
+			interceptor.dec(request.getPath());
+		}
 	}
 
 }
