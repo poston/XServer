@@ -78,27 +78,26 @@ import org.xserver.component.spring.SpringUtil;
  * Document Path:          /taskQuery/query?a=1
  * Document Length:        17 bytes
  * 
- * Concurrency Level:      1000
- * Time taken for tests:   1.230 seconds
+ * Concurrency Level:      10000
+ * Time taken for tests:   2.104 seconds
  * Complete requests:      10000
- * Failed requests:        6633
- *    (Connect: 0, Receive: 0, Length: 6633, Exceptions: 0)
+ * Failed requests:        0
  * Write errors:           0
- * Non-2xx responses:      6633
  * Keep-Alive requests:    0
- * Total transferred:      790909 bytes
- * HTML transferred:       349091 bytes
- * Requests per second:    8131.42 [#/sec] (mean)
- * Time per request:       122.980 [ms] (mean)
- * Time per request:       0.123 [ms] (mean, across all concurrent requests)
- * Transfer rate:          628.05 [Kbytes/sec] received
+ * Total transferred:      970000 bytes
+ * HTML transferred:       170000 bytes
+ * Requests per second:    4752.10 [#/sec] (mean)
+ * Time per request:       2104.332 [ms] (mean)
+ * Time per request:       0.210 [ms] (mean, across all concurrent requests)
+ * Transfer rate:          450.15 [Kbytes/sec] received
  * 
  * Connection Times (ms)<br>
- *               min  mean[+/-sd] median   max
- * Connect:        0    1   1.3      1      13
- * Processing:     0    6   7.4      4     231
- * Waiting:        0    6   7.3      4     231
- * Total:          0    7   7.6      5     231
+ *            min  mean[+/-sd] median   max
+ * Connect:       48  164  47.5    181     210
+ * Processing:   209  847 388.1    863    1389
+ * Waiting:      192  839 398.4    863    1389
+ * Total:        413 1011 361.4   1040    1549
+
  * 
  * Percentage of the requests served within a certain time (ms)
  *   50%      5
@@ -110,6 +109,17 @@ import org.xserver.component.spring.SpringUtil;
  *   98%     26
  *   99%     30
  *  100%    231 (longest request)
+ * 
+ * Percentage of the requests served within a certain time (ms)
+ *	50%   	1040
+ *	66%   	1302
+ *	75%   	1377
+ *	80%   	1399
+ *	90%   	1436
+ *	95%   	1466
+ *	98%   	1515
+ *	99%   	1531
+ *	100%   	1549 (longest request)
  * </pre>
  * 
  * @author postonzhang
