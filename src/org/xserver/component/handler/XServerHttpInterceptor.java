@@ -62,7 +62,7 @@ public class XServerHttpInterceptor extends SimpleChannelUpstreamHandler {
 			xServerListener.incInvoke(path);
 
 			if (!xServerHttpConfig.isInterceptor()) {
-				return;
+				ctx.sendUpstream(e);
 			}
 			
 			AtomicInteger count = interceptor.get(path);
