@@ -22,3 +22,5 @@ The server framework as follow:
 |                       Netty                       |
 +---------------------------------------------------+
 </pre>
+
+The author E-mail: poston1@163.com
