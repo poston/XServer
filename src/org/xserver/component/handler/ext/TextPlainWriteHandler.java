@@ -45,10 +45,6 @@ public class TextPlainWriteHandler extends AbstractWriteHandler {
 		}
 		logger.info("Response for Request [{}] is {}", attachment.getRequest()
 				.getUri(), content);
-
-		Channel channel = attachment.getChannelHandlerContext().getChannel();
-		ChannelFuture future = channel.write(response);
-		future.addListener(attachment);
 	}
 
 	private String generateJsonp(String callback, String json) {
