@@ -1,5 +1,8 @@
 package org.xserver.component.handler.ext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Component;
 import org.xserver.component.core.XServerHttpContextAttachment;
 import org.xserver.component.core.XServerHttpResponse;
@@ -11,6 +14,9 @@ public class WriteHandlerManager {
 		JSON, HTML, XML, NULL;
 	}
 
+	private static final Logger log = LoggerFactory
+			.getLogger(WriteHandlerManager.class);
+			
 	private AbstractWriteHandler abstractWriteHandler;
 
 	public AbstractWriteHandler writerHandler(XServerHttpResponse response) {
@@ -44,6 +50,22 @@ public class WriteHandlerManager {
 		abstractWriteHandler.writeContent(attachment, obj);
 	}
 
+	private void writeResponse0(XServerHttpContextAttachment attachment){
+		XServerHttpResponse response = attachment.getResponse();
+		Channel channel = attachment.getChannelHandlerContext().getChannel();
+		
+		if(channel != null && channel.isOpen() && channel.isConnected()){
+			ChannelFuture future = channel.write(response);
+			future.addListener(attachment);
+		}else{
+			if(channel != null){
+				channel.close();
+				log.info("remote client: {} close the connection.", attachment
+					.getRequest().getRemoteAddress());
+			}
+		}
+	}
+	
 	public AbstractWriteHandler getAbstractWriteHandler() {
 		return abstractWriteHandler;
 	}
