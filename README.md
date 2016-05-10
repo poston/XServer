@@ -39,5 +39,6 @@ The author E-mail: poston1@163.com
 <li>2016/09 Import <strong>Kafka</strong> for message system</li>
 <li>2016/11 Import <strong>RPC</strong> service, change services to <strong>micro-service</strong></li>
 
+<p>
 <strong>Note the source on the github is <U>2013/04</U> version<strong>
 </ul>
