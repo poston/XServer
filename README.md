@@ -25,8 +25,8 @@ The server framework as follow:
 
 The author E-mail: poston1@163.com
 
-<ul>Plan:
-<li>2013/01 Integrate Netty And Spring, implment basic HTTP Service</li>
+<ul>Develop History And Plan:
+<li>2013/01 <strong>Integrate</strong> Netty And Spring, implment <strong>basic</strong> HTTP Service</li>
 <li>2013/02 Add some component, like Mail, Jdbc, Quartz, HBase...</li>
 <li>2013/04 Bug fix and product apply</li>
 <li>2014/04 Add some component, like Gradle, SVN, WebSocket</li>
