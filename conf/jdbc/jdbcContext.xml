@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="autodetect"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans">
+	<!-- configuration principle -->
+	<!-- 1.configuration dataSource when the property have no same JDBC Source -->
+	<!-- 2.configuration dataSource when the property have no same database -->
+	<!-- 3.configuration dataSource when DaoBean use special DBCP -->
+	<!-- Oracle -->
+	<!-- <bean class="org.xserver.component.jdbc.JdbcTemplate" id="jdbcTemplateOracle"> 
+		<constructor-arg ref="dataSourceOracle" /> </bean> <bean class="com.mchange.v2.c3p0.ComboPooledDataSource" 
+		id="dataSourceOracle" destroy-method="close"> <property value="${jdbc_oracle_url}" 
+		name="jdbcUrl" /> <property value="${jdbc_oracle_user}" name="user" /> <property 
+		value="${jdbc_oracle_password}" name="password" /> </bean> -->
+	<bean class="org.xserver.component.jdbc.JdbcTemplate" id="jdbcTemplateXServer">
+		<constructor-arg ref="dataSourceXServer" />
+	</bean>
+	<bean class="org.logicalcobwebs.proxool.ProxoolDataSource" id="dataSourceXServer">
+		<property name="driver" value="${jdbc_driver_xserver}" />
+		<property name="driverUrl" value="${jdbc_url_xserver}" />
+		<property name="user" value="${jdbc_username_xserver}" />
+		<property name="password" value="${jdbc_password_xserver}" />
+		<property name="alias" value="xserver" />
+		<!-- <property name="houseKeepingSleepTime" value="90000" /> -->
+		<property name="prototypeCount" value="10" />
+		<property name="maximumConnectionCount" value="100" />
+		<property name="minimumConnectionCount" value="10" />
+		<property name="trace" value="true" />
+		<property name="verbose" value="true" />
+	</bean>
+</beans>
