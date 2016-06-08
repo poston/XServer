@@ -40,5 +40,5 @@ Develop History And Plan:
 </ul>
 
 <p>
-<strong>Note the source on the github is <U>2016/06, not all source, i will commit remain soon</U> version<strong>
+<strong>Note the source on the github is <U>2016/06 version, not all source, i will commit remain soon</U> <strong>
 
