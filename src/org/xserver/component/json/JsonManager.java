@@ -1,15 +1,14 @@
 package org.xserver.component.json;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xserver.common.util.JsonEngine;
 import org.xserver.common.util.ReflectionUtil;
 import org.xserver.common.util.StringUtil;
-import org.xserver.component.json.bean.JQueryTab;
 import org.xserver.component.json.util.JsonUtil;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -23,8 +22,13 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
  * 
  */
 public class JsonManager {
-	public static String mapper(Object[] targets)
-			throws JsonProcessingException {
+
+	private static final Logger log = LoggerFactory
+			.getLogger(JsonManager.class);
+	
+	public static final String JSON_FILTER_EXCEPT_FIELD = "except-field-filter";
+
+	public static String mapper(Object[] targets) {
 		if (StringUtil.isEmpty(targets)) {
 			return "{}";
 		}
@@ -49,10 +53,14 @@ public class JsonManager {
 						continue;
 					}
 				}
-				result.append(
-						JsonEngine.DEFAULT_JACKSON_MAPPER
-								.writeValueAsString(targets[i])).append(
-						JsonUtil.COMMA);
+				try {
+					result.append(
+							JsonEngine.DEFAULT_JACKSON_MAPPER
+									.writeValueAsString(targets[i])).append(
+							JsonUtil.COMMA);
+				} catch (JsonProcessingException e) {
+					log.error("json process error", e);
+				}
 			}
 		}
 		return result.substring(0, result.length() - 1) + JsonUtil.RIGHT_BRACE;
@@ -82,6 +90,29 @@ public class JsonManager {
 	}
 
 	/**
+	 * Serialized specified bean to json
+	 *
+	 * @param target
+	 *            specified bean
+	 * @return json data
+	 * @throws JsonProcessingException
+	 */
+	public static String jsonFilter(Object target) throws JsonProcessingException {
+		// when XServer use jsonExceptField to get json, must add the
+		// @JsonFilter annotation to the JavaBean, According to this when we
+		// want to serialize all field in the JavaBean will cause a
+		// JsonMappingException: Can not resolve BeanPropertyFilter with id
+		// 'exception-field-filter'. Then put the
+		// DEFAULT_JACKSON_MAPPER.writeValueAsString and jsonExceptField(target,
+		// new String[]{}) in try-catch block will solve the problem
+		try {
+			return JsonEngine.FILTER_JACKSON_MAPPER.writeValueAsString(target);
+		} catch (JsonMappingException e) {
+			return jsonExceptField(target, new String[] {});
+		}
+	}
+
+	/**
 	 * Serialized bean to json, but exclude some fields of specified bean target
 	 * 
 	 * @param target
@@ -94,7 +125,7 @@ public class JsonManager {
 	public static String jsonExceptField(Object target, String[] fields)
 			throws JsonProcessingException {
 		FilterProvider fp = new SimpleFilterProvider().addFilter(
-				"except-field-filter",
+				JSON_FILTER_EXCEPT_FIELD,
 				SimpleBeanPropertyFilter.serializeAllExcept(fields));
 		JsonEngine.FILTER_JACKSON_MAPPER.setFilters(fp);
 		return JsonEngine.FILTER_JACKSON_MAPPER.writeValueAsString(target);
@@ -118,14 +149,27 @@ public class JsonManager {
 		return jsonExceptField(target, exceptFields);
 	}
 
-	public static void main(String[] args) throws Exception {
-		JQueryTab tab = new JQueryTab();
-		tab.setContent("123");
-		tab.setId("1");
+	public static <T> T getBean(String json, Class<T> clazz) {
+		T t = null;
+		try {
+			t = JsonEngine.DEFAULT_JACKSON_MAPPER.readValue(json, clazz);
+		} catch (Exception e) {
+			log.error("Serialized json to '" + clazz.getName()
+					+ "' occur error.", e);
+		}
 
-		List<JQueryTab> lists = new ArrayList<JQueryTab>();
-		lists.add(tab);
-		System.out.println(json(lists));
-		System.out.println(jsonExceptField(lists, new String[] { "id" }));
+		return t;
+	}
+	
+	public static <T> T getCompositeObject(String json, TypeReference<T> typeReference){
+		T t = null;
+		try {
+			t = JsonEngine.DEFAULT_JACKSON_MAPPER.readValue(json, typeReference);
+		} catch (Exception e) {
+			log.error("Serialized json to '" + typeReference
+					+ "' occur error.", e);
+		} 
+		
+		return t;
 	}
 }
