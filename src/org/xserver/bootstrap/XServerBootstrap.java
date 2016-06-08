@@ -1,6 +1,7 @@
 package org.xserver.bootstrap;
 
 import java.net.InetSocketAddress;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
@@ -10,10 +11,11 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import org.xserver.component.config.XServerHttpConfig;
-import org.xserver.component.core.InterfaceContext;
+import org.xserver.component.core.interfaces.InterfaceContext;
+import org.xserver.component.core.interfaces.InterfaceMeta;
 import org.xserver.component.core.XServerHttpFactory;
+import org.xserver.component.extension.filter.DefaultContextFilterManager;
 import org.xserver.component.listener.XServerListener;
 import org.xserver.component.log.StdOutLog;
 import org.xserver.component.spring.SpringUtil;
@@ -97,18 +99,18 @@ import org.xserver.component.spring.SpringUtil;
  * Processing:   209  847 388.1    863    1389
  * Waiting:      192  839 398.4    863    1389
  * Total:        413 1011 361.4   1040    1549
- *
+ * 
  * 
  * Percentage of the requests served within a certain time (ms)
- *	50%   	1040
- *	66%   	1302
- *	75%   	1377
- *	80%   	1399
- *	90%   	1436
- *	95%   	1466
- *	98%   	1515
- *	99%   	1531
- *	100%   	1549 (longest request)
+ * 50%   	1040
+ * 66%   	1302
+ * 75%   	1377
+ * 80%   	1399
+ * 90%   	1436
+ * 95%   	1466
+ * 98%   	1515
+ * 99%   	1531
+ * 100%   	1549 (longest request)
  * </pre>
  * 
  * @author postonzhang
@@ -129,6 +131,10 @@ public class XServerBootstrap extends AbstractBootstrap {
 	private XServerHttpConfig xServerHttpConfig;
 	@Resource
 	private XServerListener xServerListener;
+//	@Resource
+//	private XServerAgent xServerAgent;
+	@Resource
+	private DefaultContextFilterManager defaultContextFilterManager;
 
 	// @Resource
 	// private BootstrapManager bootstrapManager;
@@ -158,7 +164,9 @@ public class XServerBootstrap extends AbstractBootstrap {
 						Executors.newCachedThreadPool(),
 						Executors.newCachedThreadPool()));
 
-		serverBootstrap.setOption("tcpNoDelay", true);
+		serverBootstrap.setOption("tcpNoDelay",
+				xServerHttpConfig.isTcpNoDelay());
+		serverBootstrap.setOption("reuseAddress", true);
 
 		serverBootstrap.setPipelineFactory(xServerBootstrap
 				.getXServerHttpFactory());
@@ -168,6 +176,12 @@ public class XServerBootstrap extends AbstractBootstrap {
 		logger.info("XServer bind port {}.", xServerHttpConfig.getPort());
 	}
 
+	public void initZooKeeper() {
+		Map<String, InterfaceMeta> map = interfaceContext.getInterfaceContext();
+		System.err.println(map);
+		// TODO ZooKeeper
+	}
+
 	private static void initSpring() {
 		logger.info("---------->Spring Dependency Injection");
 		stdOutLog
@@ -175,10 +189,26 @@ public class XServerBootstrap extends AbstractBootstrap {
 		SpringUtil.loadApplicationContext();
 	}
 
+//	private void initAgent() {
+//		logger.info("---------->XServer initialized Agent");
+//		stdOutLog
+//				.info("----------------------------------------------------XServer initialized Agent----------------------------------------------------");
+//		xServerAgent.initXServerAgent(xServerHttpFactory.getExecutionHandler()
+//				.getExecutor());
+//	}
+
 	public void initInterfaceMeta() {
 		XServerBootstrap bootstrap = (XServerBootstrap) SpringUtil
 				.getBean(XServerBootstrap.class);
 		bootstrap.getInterfaceContext().loadInterfaceContext();
+	}
+
+	public void initFilterContext() {
+		try {
+			defaultContextFilterManager.initFilterContext();
+		} catch (Exception e) {
+			logger.error("init filter context error", e);
+		}
 	}
 
 	public static void main(String[] args) {
@@ -236,13 +266,24 @@ public class XServerBootstrap extends AbstractBootstrap {
 				.info("----------------------------------------------------Load InterfaceMeta by Spring----------------------------------------------------");
 		initInterfaceMeta();
 
+		initFilterContext();
+		
 		logger.info("---------->Initialize XServer framework");
 		stdOutLog
 				.info("----------------------------------------------------Initialize XServer framework----------------------------------------------------");
 		initSystem();
+
+		//		logger.info("---------->Initialize XServer Agent");
+		//		stdOutLog
+		//				.info("----------------------------------------------------Initialize XServer Agent----------------------------------------------------");
+		//		initAgent();
+
+		logger.info("----------------------------------------------------Register Zookeeper----------------------------------------------------");
+		initZooKeeper();
+
 	}
 
-	public static final String logo = "..........................................................................\n"
+	public static final String logo = "\r\n..........................................................................\n"
 			+ "'##::::'##::'######::'########:'########::'##::::'##:'########:'########::\r\n"
 			+ ". ##::'##::'##... ##: ##.....:: ##.... ##: ##:::: ##: ##.....:: ##.... ##:\r\n"
 			+ ":. ##'##::: ##:::..:: ##::::::: ##:::: ##: ##:::: ##: ##::::::: ##:::: ##:\r\n"
