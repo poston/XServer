@@ -7,13 +7,13 @@
            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="xxx" />
-		<property name="username" value="xxx" />
-		<property name="password" value="xxx" />
+		<property name="host" value="#your smtp server host#" />
+		<property name="username" value="#mail username#" />
+		<property name="password" value="#mail password#" />
 	</bean>
 
 	<bean id="mailTemplate" class="org.xserver.component.mail.MailTemplate">
-		<constructor-arg value="xxx" />
+		<constructor-arg value="#the send, like:poston@xserver.com#" />
 		<constructor-arg ref="mailSender" />
 	</bean>
 </beans>
