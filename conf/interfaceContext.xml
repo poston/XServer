@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean class="org.xserver.component.core.interfaces.InterfaceResolverManager" id="interfaceResolverManager"
+          lazy-init="true">
+        <property name="interfaceResolvers">
+            <list>
+                <ref bean="defaultInterfaceResolver"/>
+                <ref bean="pathInterfaceResolver"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>
