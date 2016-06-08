@@ -10,17 +10,15 @@ The server framework as follow:
 | 1 |   | 2 |   | 3 |   | 4 |   ... Client...  | n |
 +---+   +---+   +---+   +---+                  +---+
                 ||
-                ||-------------------JSON,JSONP,XML
+                ||-------------------JSON,JSONP,XML,RPC
                \||/
-+---------------------------------------------------+
-|                XServer Http Interface             |			   
-+---------------------------------------------------+
-|      Jdbc(Mail,HBase,ElasticSearch...)Template    |
-|---------------------------------------------------+
-|                       Spring                      |
-|---------------------------------------------------+
-|                       Netty                       |
-+---------------------------------------------------+
++---------------------------------------------------+ +----------------------------------------------+
+|                XServer Http Interface             |	|JDBC, HBase, Mongo                            |
+|---------------------------------------------------+ |ElasticSearch                                 |
+|                       Spring                      | |Shiro...                                      |
+|---------------------------------------------------+ +----------------------------------------------+
+|                       Netty                       | |                 Component                    |
++---------------------------------------------------+ +----------------------------------------------+
 </pre>
 
 The author E-mail: poston1@163.com
@@ -42,5 +40,5 @@ Develop History And Plan:
 </ul>
 
 <p>
-<strong>Note the source on the github is <U>2013/04</U> version<strong>
+<strong>Note the source on the github is <U>2016/06, not all source, i will commit remain soon</U> version<strong>
 
