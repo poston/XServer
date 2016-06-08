@@ -11,9 +11,9 @@
 	<!-- 2.HBase table name -->
 	<!-- 3.ScanCaching if this item miss, the default scancaching 1000 will 
 		be set -->
-	<bean id="hbaseTemplate" class="org.xserver.component.hbase.HBaseTemplate">
+	<bean id="hbaseTemplateRMonthOperate" class="org.xserver.component.hbase.HBaseTemplate">
 		<constructor-arg ref="hTablePool" />
-		<constructor-arg value="${tableName}" />
+		<constructor-arg value="#your hbase table name#" />
 		<constructor-arg value="2000" />
 	</bean>
 
@@ -30,7 +30,7 @@
 		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="locations">
 			<list>
-				<value>classpath:hbase.properties</value>
+				<value>classpath:hbase/hbase.properties</value>
 			</list>
 		</property>
 	</bean>
