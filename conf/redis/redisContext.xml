@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<bean id="redisTemplate" class="org.xserver.component.redis.RedisTemplate">
+		<constructor-arg ref="jedisPool" />
+	</bean>
+
+	<bean id="jedisPool" class="org.xserver.component.redis.spring.RedisPoolFactory">
+		<constructor-arg ref="jedisPoolConfig" />
+		<constructor-arg value="xxx.xxx.xxx.xxx" />
+	</bean>
+
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxActive" value="${redis.maxActive}" />
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxWait" value="${redis.maxWait}" />
+		<property name="minEvictableIdleTimeMillis" value="${redis.minEvictableIdleTimeMillis}" />
+		<property name="numTestsPerEvictionRun" value="${redis.numTestsPerEvictionRun}" />
+		<property name="timeBetweenEvictionRunsMillis" value="${redis.timeBetweenEvictionRunsMillis}" />
+		<property name="whenExhaustedAction" value="${redis.whenExhaustedAction}" />
+	</bean>
+</beans>
