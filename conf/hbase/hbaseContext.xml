@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- HBaseTemplate Configuration Role -->
+	<!-- 1.Always is hTablePool, not change -->
+	<!-- 2.HBase table name -->
+	<!-- 3.ScanCaching if this item miss, the default scancaching 1000 will 
+		be set -->
+	<bean id="hbaseTemplate" class="org.xserver.component.hbase.HBaseTemplate">
+		<constructor-arg ref="hTablePool" />
+		<constructor-arg value="${tableName}" />
+		<constructor-arg value="2000" />
+	</bean>
+
+	<bean id="hTablePool" class="org.apache.hadoop.hbase.client.HTablePool">
+		<constructor-arg ref="hbaseConfiguration" />
+		<constructor-arg value="${hbase.htable.pool.size}" />
+	</bean>
+	<bean id="hbaseConfiguration"
+		class="org.xserver.component.hbase.spring.HBaseConfigurationFactoryBean">
+		<property name="hbaseProperties" ref="hbaseProperties" />
+	</bean>
+
+	<bean id="hbaseProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath:hbase.properties</value>
+			</list>
+		</property>
+	</bean>
+</beans>
