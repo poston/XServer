@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="autodetect"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans">
+
+	<!-- Add filter into request context, the process order as configured order -->
+	<bean
+		class="org.xserver.component.extension.filter.DefaultContextFilterManager"
+		id="filterContextManager">
+		<property name="filterChain">
+			<list>
+				<ref bean="shiroFilterConfig" />
+				<ref bean="parameterFilterConfig" />
+				<ref bean="recordUserOperationLogFilterConfig" />
+			</list>
+		</property>
+
+	</bean>
+
+	<bean class="org.xserver.component.extension.filter.FilterConfig"
+		id="recordUserOperationLogFilterConfig">
+		<property name="filter" ref="recordUserOperationLogFilter" />
+		<property name="includePaths">
+			<list>
+				<value>/.*/.*</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="org.xserver.component.extension.filter.FilterConfig"
+		id="parameterFilterConfig">
+		<property name="filter" ref="parameterFilter" />
+		<property name="includePaths">
+			<list>
+				<value>/.*/.*</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="org.xserver.component.extension.filter.FilterConfig"
+		id="shiroFilterConfig">
+		<property name="filter" ref="shiroFilter" />
+		<property name="excludePaths">
+			<list>
+				<value>.*/permission-ignore/.*</value>
+				<!-- <value>^/login/login$</value> <value>^/login/logout$</value> -->
+			</list>
+		</property>
+		<property name="includePaths">
+			<list>
+				<value>/.*/.*</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean
+		class="org.xserver.component.extension.filter.parameter.XServerParametersProcessFilter"
+		id="parameterFilter" />
+
+	<bean class="org.xserver.component.extension.shiro.filter.XServerShiroFilter"
+		id="shiroFilter">
+		<constructor-arg>
+			<ref bean="redisSessionDecoder" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="recordUserOperationLogFilter"
+		class="org.xserver.component.extension.filter.operationlog.RecordUserOperationLogFilter">
+		<property name="mongoTemplate" ref="mongoTemplate" />
+	</bean>
+</beans>
