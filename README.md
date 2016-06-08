@@ -13,7 +13,7 @@ The server framework as follow:
                 ||-------------------JSON,JSONP,XML,RPC
                \||/
 +---------------------------------------------------+ +----------------------------------------------+
-|                XServer Http Interface             | |JDBC, HBase, Mongo...                         |
+|                XServer Http Interface             | |JDBC, HBase, Mongo, Redis, FastDFS...         |
 |---------------------------------------------------+ |ElasticSearch, ZooKeeper, Kafka...            |
 |                       Spring                      | |Shiro, SVN, Gradle...                         |
 |---------------------------------------------------+ +----------------------------------------------+
