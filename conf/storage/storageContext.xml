@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+           
+	<bean id="storageTemplate" class="org.xserver.component.storage.StorageFactoryBean">
+		<property name="systemStorageTemplate" ref="#oss, aws, fastdfs Template" />
+	</bean>
+
+	<bean id="storageTemplateXXX" class="org.xserver.component.storage.StorageFactoryBean">
+		<property name="systemStorageTemplate" ref="awsTemplateXXX" />
+	</bean>
+
+	<bean id="ossTemplateXXX" class="org.xserver.component.oss.OSSTemplate">
+		<constructor-arg ref="#" />
+		<constructor-arg value="#bucket name" />
+		<constructor-arg ref="uuidGenerator" />
+	</bean>
+
+	<bean id="ossClientXXX" class="org.xserver.component.oss.spring.OSSClientFactoryBean">
+		<property name="accessKeyId" value="${oss.accessKeyId.xxx}" />
+		<property name="accessKeySecret" value="${oss.accessKeySecret.xxx}" />
+		<property name="endpoint" value="${oss.endpoint.xxx}" />
+	</bean>
+
+	<bean id="uuidGenerator" class="org.xserver.component.oss.id.impl.UUIDGenerator" />
+
+	<bean id="simpleIdGenerator" class="org.springframework.util.SimpleIdGenerator" />
+	<!--AWS Client Conf-->
+	<bean id="awsTemplateXXX" class="org.xserver.component.aws.AwsTemplate">
+		<constructor-arg ref="awsClientXXX" />
+		<constructor-arg value="#bucket name" />
+		<constructor-arg ref="simpleIdGenerator" />
+	</bean>
+
+	<bean id="awsClientXXX" class="org.xserver.component.aws.spring.AmazonS3ClientFactoryBean">
+		<property name="accesskey" value="${aws.accesskey.xxx}" />
+		<property name="accessKeySecret" value="aws.accessKeySecret.xxx" />
+		<property name="endpoint" value="${aws.endpoint.xxx}" />
+	</bean>
+
+
+	<!-- FASTDFS CLIENT CONF -->
+	<bean id="fastDFSTemplate" class="org.xserver.component.fastdfs.FastDFSTemplate">
+		<property name="storageClientPoolFactory" ref="storageClientPoolFactory" />
+		<property name="g_http_head" value="${pic.nginx.host}" />
+	</bean>
+
+	<bean id="storageClientPoolFactory"
+		class="org.xserver.component.fastdfs.spring.StorageClientPoolFactory">
+		<constructor-arg ref="fastDFSPoolConfig" />
+		<constructor-arg ref="storageClientFactory" />
+	</bean>
+
+	<bean id="fastDFSPoolConfig" class="org.xserver.component.fastdfs.spring.FastDFSPoolConfig">
+		<property name="maxIdle" value="${fastdfs.pool.maxIdle}" />
+		<property name="minIdle" value="${fastdfs.pool.minIdle}" />
+		<property name="maxTotal" value="${fastdfs.pool.maxTotal}" />
+		<property name="maxWaitMillis" value="${fastdfs.pool.maxWaitMillis}" />
+		<property name="testOnBorrow" value="${fastdfs.pool.testOnBorrow}" />
+		<property name="testOnReturn" value="${fastdfs.pool.testOnReturn}" />
+		<property name="testWhileIdle" value="${fastdfs.pool.testWhileIdle}" />
+		<property name="timeBetweenEvictionRunsMillis"
+			value="${fastdfs.pool.timeBetweenEvictionRunsMillis}" />
+		<property name="numTestsPerEvictionRun" value="${fastdfs.pool.numTestsPerEvictionRun}" />
+		<property name="minEvictableIdleTimeMillis" value="${fastdfs.pool.minEvictableIdleTimeMillis}" />
+		<property name="softMinEvictableIdleTimeMillis"
+			value="${fastdfs.pool.softMinEvictableIdleTimeMillis}" />
+	</bean>
+
+	<bean id="storageClientFactory"
+		class="org.xserver.component.fastdfs.spring.StorageClientFactory">
+		<property name="g_servers" value="${fastdfs.servers}" />
+		<property name="g_tracker_http_port" value="${fastdfs.tracker_http_port}" />
+		<property name="g_connect_time_out" value="${fastdfs.connect_timeout}" />
+		<property name="g_network_timeout" value="${fastdfs.newwork_timeout}" />
+		<property name="g_anti_steal_token" value="${fastdfs.anti_steal_token}" />
+		<property name="g_secret_key" value="" />
+	</bean>
+</beans>
