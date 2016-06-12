@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channel;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
@@ -47,22 +48,27 @@ public class FileUtil {
 		ReadableByteChannel readChannel = Channels.newChannel(new FileInputStream(file));
 		WritableByteChannel writeChannel = Channels.newChannel(outputStream);
 
-		ByteBuffer buffer = ByteBuffer.allocate(1024);
-		while (readChannel.read(buffer) != -1) {
+		try {
+			ByteBuffer buffer = ByteBuffer.allocate(1024);
+			while (readChannel.read(buffer) != -1) {
+				buffer.flip();
+
+				writeChannel.write(buffer);
+
+				buffer.compact();
+			}
+
 			buffer.flip();
 
-			writeChannel.write(buffer);
+			while (buffer.hasRemaining()) {
+				writeChannel.write(buffer);
+			}
 
-			buffer.compact();
+			return outputStream.toString(getFileEncoding(file));
+		} finally {
+			readChannel.close();
+			writeChannel.close();
 		}
-
-		buffer.flip();
-
-		while (buffer.hasRemaining()) {
-			writeChannel.write(buffer);
-		}
-
-		return outputStream.toString(getFileEncoding(file));
 	}
 
 	public static String getFileContent2(String filePath) throws IOException {
@@ -71,15 +77,16 @@ public class FileUtil {
 
 	public static String getFileContent2(File file) throws IOException {
 		FileInputStream inputStream = new FileInputStream(file);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);
+		FileChannel channel = inputStream.getChannel();
+
 		try {
-			FileChannel channel = inputStream.getChannel();
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);
-
 			channel.transferTo(0, inputStream.available(), Channels.newChannel(outputStream));
-
 			return outputStream.toString(getFileEncoding(file));
 		} finally {
 			inputStream.close();
+			outputStream.close();
+			channel.close();
 		}
 	}
 
