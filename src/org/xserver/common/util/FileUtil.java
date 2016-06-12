@@ -3,9 +3,11 @@ package org.xserver.common.util;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
@@ -17,23 +19,8 @@ import java.nio.channels.WritableByteChannel;
  *
  */
 public class FileUtil {
-	public static final String DEFAULT_FILE_CHARSET = "UTF-8";
-
 	/**
-	 * get the file content, TODO auto get file charset
-	 * 
-	 * @see #getFileContent(File, String)
-	 * @param filePath
-	 * @param charset
-	 * @return
-	 * @throws IOException
-	 */
-	public static String getFileContent(String filePath, String charset) throws IOException {
-		return getFileContent(new File(filePath), charset);
-	}
-
-	/**
-	 * get the file content, TODO auto get file charset
+	 * get the file content
 	 * 
 	 * @see #getFileContent(File, String)
 	 * @param filePath
@@ -42,11 +29,11 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static String getFileContent(String filePath) throws IOException {
-		return getFileContent(new File(filePath), DEFAULT_FILE_CHARSET);
+		return getFileContent(new File(filePath));
 	}
 
 	/**
-	 * get the file content, TODO auto get file charset
+	 * get the file content
 	 * 
 	 * @see #getFileContent(File, String)
 	 * @param filePath
@@ -55,10 +42,6 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static String getFileContent(File file) throws IOException {
-		return getFileContent(file, DEFAULT_FILE_CHARSET);
-	}
-
-	public static String getFileContent(File file, String charset) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);
 
 		ReadableByteChannel readChannel = Channels.newChannel(new FileInputStream(file));
@@ -79,7 +62,42 @@ public class FileUtil {
 			writeChannel.write(buffer);
 		}
 
-		return outputStream.toString(charset);
+		return outputStream.toString(getFileEncoding(file));
+	}
 
+	public static String getFileContent2(String filePath) throws IOException {
+		return getFileContent2(new File(filePath));
+	}
+
+	public static String getFileContent2(File file) throws IOException {
+		FileInputStream inputStream = new FileInputStream(file);
+		try {
+			FileChannel channel = inputStream.getChannel();
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);
+
+			channel.transferTo(0, inputStream.available(), Channels.newChannel(outputStream));
+
+			return outputStream.toString(getFileEncoding(file));
+		} finally {
+			inputStream.close();
+		}
+	}
+
+	public static String getFileEncoding(String filePath) throws IOException {
+		FileWriter writer = new FileWriter(filePath);
+		try {
+			return writer.getEncoding();
+		} finally {
+			writer.close();
+		}
+	}
+
+	public static String getFileEncoding(File file) throws IOException {
+		FileWriter writer = new FileWriter(file);
+		try {
+			return writer.getEncoding();
+		} finally {
+			writer.close();
+		}
 	}
 }
